@@ -1,0 +1,19 @@
+::ng-deep .mat-tab-body-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+::ng-deep .mat-tab-label .mat-tab-label-content {
+    font-weight: bold;
+    color: black;
+}
+
+.icon {
+    height: 12px;
+    width: 12px;
+}
+
+:host ::ng-deep .mat-tab-label {
+    height: 40px !important;
+    min-width: 120px !important;
+}

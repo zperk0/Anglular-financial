@@ -4,10 +4,23 @@
     height: 100%;
 }
 
-mat-sidenav {
-    width: 40vh;
+.left-mat-sidenav {
+    width: var(--left-sidenav-width);
+}
+
+.right-mat-sidenav {
+    width: var(--right-sidenav-width);
 }
 
 mat-sidenav-container {
     height: 100%;
+}
+
+::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: unset !important;
+}
+
+:host ::ng-deep .mat-drawer-over {
+    width: 45vh !important;
+    background-color: #FAFAFA !important;
 }

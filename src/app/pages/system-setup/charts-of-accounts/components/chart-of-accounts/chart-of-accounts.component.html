@@ -1,0 +1,176 @@
+<app-system-setup>
+    <div>
+        <p class="text-sm font-medium">Chart of Accounts for:<span class="text-accent ml-2">Medgulf</span></p>
+    </div>
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center">
+            <p class="text-sm mr-2">Search</p>
+            <app-input-field icon="search" [control]="searchFormControl"></app-input-field>
+        </div>
+        <div class="flex items-center">
+            <app-button (trigger)="onChartOfAccountAdded(false,null,true)" icon="add" text="Add New Group"
+                classes="bg-accent text-sm text-white font-light h-10 w-[200px]">
+            </app-button>
+        </div>
+    </div>
+    <ng-container *ngTemplateOutlet="table; context:{data:{items:chartOfAccountsList, 
+            itemsCount:itemsCount,showHeader:true,pageSize,class:'main-table',isLazy:false}}"></ng-container>
+
+</app-system-setup>
+
+<ng-template let-data="data" #tableBody>
+    <td style="width:15%">
+        <span class="font-bold" class="text-xs py-1">{{data.item.accountNo}}</span>
+    </td>
+    <td style="width:18%">
+        <div class="font-bold" class="text-xs text-ellipsis overflow-hidden whitespace-nowrap w-[200px] py-1">
+            {{data.item.decription}}
+        </div>
+    </td>
+    <td style="width:10%" class="text-center">
+        <span class="font-bold" class="text-xs py-1">{{data.item.type}}</span>
+    </td>
+    <td style="width:10%" class="text-center">
+        <span class="font-bold" class="text-xs py-1">{{data.item.toIncrease}}</span>
+    </td>
+    <td style="width:10%" class="text-center">
+        <span class="font-bold" class="text-xs py-1">{{data.item.currency}}</span>
+    </td>
+    <td style="width:20%" class="text-center">
+        <span class="font-bold" class="text-xs py-1">{{data.item.balance| number}}</span>
+    </td>
+    <td style="width:10%">
+        <div class="flex justify-end pr-4 py-1">
+            <button *ngIf="showViewButton(data.item)"
+                [routerLink]="[viewAccountLink,data.item.accountTypeId??data.item.accountId,{outlets:{sidenav:null}}]"
+                [queryParams]="{'lastLevelFlag': data.item.childrenCount===0,'name':data.item.accountNo}" mat-button>
+                <span class="material-icons-outlined text-accent">
+                    visibility
+                </span>
+            </button>
+            <button (click)="onChartOfAccountAdded(data.item.isLeafItem,data.item.accountTypeId,!data.item.isLeafItem)"
+                *ngIf="showAddButton(data.item)" mat-button class="ml-4">
+                <mat-icon svgIcon="add-grid" class="text-accent"></mat-icon>
+            </button>
+            <button (click)="onChartOfAccountEdited(data.item)" mat-button class="ml-4">
+                <span class="material-icons-outlined text-accent">
+                    border_color
+                </span>
+            </button>
+            <mat-slide-toggle [checked]="data.item.activeFlag"
+                (change)="onChartOfAccountDeactivated(data.item,$event.checked)" class="ml-4"></mat-slide-toggle>
+        </div>
+    </td>
+</ng-template>
+
+<ng-template let-data="data" #table>
+    <p-table (onLazyLoad)="onLazyLoad($event)" [totalRecords]="data.itemsCount" [lazy]="data.isLazy"
+        [rows]="data.pageSize" [paginator]="true" [class]="data.class" [value]="data.items" rowGroupMode="subheader"
+        rowExpandMode="single" dataKey="accountNo">
+        <ng-template *ngIf="data.showHeader" pTemplate="header">
+            <tr>
+                <th style="width:7%">
+                </th>
+                <th style="width:15%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="accountNo" matchMode="contains" [showMenu]="false"
+                            [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="Ledger NO">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="accountNo" pSortableColumn="accountNo"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:18%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="decription" matchMode="contains" [showMenu]="false"
+                            [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="Description">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="decription" pSortableColumn="decription"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:10%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="type" matchMode="contains" [showMenu]="false" [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="Type">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="type" pSortableColumn="type"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:10%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="toIncrease" matchMode="contains" [showMenu]="false"
+                            [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="DC/CR">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="toIncrease" pSortableColumn="toIncrease"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:10%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="currency" matchMode="contains" [showMenu]="false"
+                            [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="Currency">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="currency" pSortableColumn="currency"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:20%">
+                    <div class="flex items-center">
+                        <p-columnFilter field="balance" matchMode="contains" [showMenu]="false"
+                            [showClearButton]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <input type="text" pInputText [ngModel]="value" (ngModelChange)="filter($event)"
+                                    class="p-inputtext" placeholder="Balance">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-sortIcon field="balance" pSortableColumn="balance"></p-sortIcon>
+                    </div>
+                </th>
+                <th class="text-xs" style="width:10%">Action</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex" let-expanded="expanded">
+            <tr>
+                <td style="width:7%">
+                    <div [ngClass]="{'justify-end': item?.parentAccountTypeId}" class="flex items-center">
+                        <button *ngIf="item.accountTypeId" type="button" pButton pRipple [pRowToggler]="item"
+                            class="py-1">
+                            <span class="material-icons-outlined">
+                                {{expanded?'remove_circle_outline':'add_circle_outline'}}
+                            </span>
+                        </button>
+                    </div>
+                </td>
+                <ng-container *ngTemplateOutlet="tableBody; context:{data:{item}}">
+                </ng-container>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-item>
+            <tr>
+                <td class="sub-table" colspan="8">
+                    <ng-container *ngTemplateOutlet="table; context:{data:{items:item.children,showHeader:false,isLazy:true,itemsCount:item.childrenCount
+                             ,pageSize:item.childrenCount,class:'main-table'}}">
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</ng-template>

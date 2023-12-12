@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { BackLeftSideBarComponent } from '../back-left-side-bar/back-left-side-bar.component';
 
 @Component({
@@ -17,12 +17,14 @@ import { BackLeftSideBarComponent } from '../back-left-side-bar/back-left-side-b
       transition('active => inactive', animate('500ms ease-out')),
       transition('inactive => active', animate('500ms ease-in'))
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeftSideBarComponent implements OnInit {
 
   flip: string = 'inactive';
   @ViewChild(BackLeftSideBarComponent) BackLeftSideBarComponent!: BackLeftSideBarComponent;
+  @Output() toggleSidenavCollapsedEvent: EventEmitter<any> = new EventEmitter<void>();
   constructor() { }
 
   ngOnInit(): void {
@@ -31,5 +33,9 @@ export class LeftSideBarComponent implements OnInit {
   toggleFlip() {
     this.flip = (this.flip == 'inactive') ? 'active' : 'inactive';
     this.BackLeftSideBarComponent.animationState = 'in';
+  }
+
+  toggleSidenav(data: any) {
+    this.toggleSidenavCollapsedEvent.emit(data);
   }
 }

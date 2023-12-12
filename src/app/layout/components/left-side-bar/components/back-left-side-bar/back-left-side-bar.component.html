@@ -1,8 +1,22 @@
-<div class="h-full pl-4 pr-4" [@fadeSlideInOut]="animationState">
-    <div class="h-[5%] flex items-center gap-2 text-lg text-black">
-        <mat-icon svgIcon="close" class="cursor-pointer" (click)="flipCard()">
-        </mat-icon>
+<div class="relative h-full" [@fadeSlideInOut]="animationState">
+  <div [ngClass]="{'pl-4 pr-4': extended,'items-center': !extended}" class="h-full flex justify-center flex-col pb-2">
+    <div class="h-[5%] flex items-center gap-2 text-lg text-black" *ngIf="extended">
+      <mat-icon svgIcon="close" class="cursor-pointer hover:font-bold icon" (click)="flipCard()">
+      </mat-icon>
     </div>
-    <div class="h-[95%]">
+    <div [ngClass]="{'pl-8': extended}"
+      class="h-[95%] flex flex-col content-between text-sm text-black pt-4 pb-4 overflow-y-auto gap-2">
+      <app-navigation-item [extended]="extended" [item]="item"
+        *ngFor="let item of navigationList.upper; let i = index"></app-navigation-item>
+
+      <span class="spacer"></span>
+      <app-navigation-item [extended]="extended" [item]="item"
+        *ngFor="let item of navigationList.lower; let i = index"></app-navigation-item>
     </div>
+  </div>
+  <div
+    class="absolute h-32 w-4 right-0 top-[40%] bg-primary rounded-l-lg flex justify-center items-center text-white font-light cursor-pointer"
+    (click)="toggleSidenav()">
+    <span>{{path}}</span>
+  </div>
 </div>

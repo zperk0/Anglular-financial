@@ -1,0 +1,26 @@
+ :host ::ng-deep {
+
+     .selectCustomClass {
+         border-radius: 10% !important;
+         padding-top: 20px;
+     }
+
+     .mat-option.mat-active {
+         background-color: #FFFFFF;
+     }
+
+     .dropDownIcon {
+         width: 20px;
+         height: 20px;
+     }
+
+     .icon {
+         width: 10px !important;
+         height: 10px !important;
+
+     }
+
+     .option {
+         height: 3rem;
+     }
+ }
